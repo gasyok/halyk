@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@blockscoped/swagger-convert-to-html": "^1.0.12"
+  }
+}

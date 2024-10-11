@@ -1,0 +1,213 @@
+syntax = "proto3";
+
+option go_package = "github.com/gasyok/Assessment/pkg/auction;auction";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "google/api/field_behavior.proto";
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Auction";
+    version: "1.0.0";
+    description: "Auction a.k.a. marketplace where everyone can place Lots to bid";
+  };
+  host: "localhost:7000";
+  schemes: HTTP;
+  consumes: "application/json";
+  produces: "application/json";
+  security_definitions: {
+    security: {
+      key: "api-token",
+      value: {
+        in: IN_HEADER;
+        type: TYPE_API_KEY;
+        name: "x-api-token";
+        description: "Authorization token";
+      }
+    };
+  };
+};
+
+message Lot {
+    uint64 id = 1;
+    uint64 seller_id = 2;
+    string title = 3;
+    string description = 4;
+    float start_price = 5;
+    uint64 auction_id = 6;
+    google.protobuf.Timestamp created_at = 7;
+}
+
+service Auction {
+    rpc UpBalance(UpBalanceRequest) returns (UpBalanceResponse) {
+        option (google.api.http) = {
+            post: "/upbalance"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Upgrade user's balance";
+            description: "Accepts user's id and amount which will be added to the balance";
+            security: {
+                security_requirement: {
+                key: "api-token";
+                value: {};
+                };
+            };
+        };
+    };
+    rpc CreateLot(CreateLotRequest) returns (CreateLotResponse) {
+        option (google.api.http) = {
+            post: "/lots"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Creates a lot";
+            description: "";
+            security: {
+                security_requirement: {
+                key: "api-token";
+                value: {};
+                };
+            };
+        };
+
+    };
+    rpc FetchLot(FetchLotRequest) returns (FetchLotResponse) {
+        option (google.api.http) = {
+            get: "/lots/{lot_id}"
+        };
+    };
+    rpc ListLots(ListLotsRequest) returns (ListLotsResponse) {
+        option (google.api.http) = {
+            get: "/lots"
+        };
+    };
+    rpc CreateBid(CreateBidRequest) returns (CreateBidResponse) {
+        option (google.api.http) = {
+            post: "/bids"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Creates a bid";
+            description: "";
+            security: {
+                security_requirement: {
+                key: "api-token";
+                value: {};
+                };
+            };
+        };
+
+    };
+    rpc CloseAuction(CloseAuctionRequest) returns (CloseAuctionResponse) {
+        option (google.api.http) = {
+            patch: "/auction/close"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Closes auction from biding";
+            description: "";
+            security: {
+                security_requirement: {
+                key: "api-token";
+                value: {};
+                };
+            };
+        };
+    };
+    rpc ProcessTransactions(ProcessTransactionsRequest) returns (ProcessTransactionsResponse) {
+        option (google.api.http) = {
+            patch: "/auction/transactions"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Triggers the proccess of transactions";
+            description: "";
+            security: {
+                security_requirement: {
+                key: "api-token";
+                value: {};
+                };
+            };
+        };
+
+    };
+}
+
+message UpBalanceRequest {
+    uint64 user_id = 1 [
+        (validate.rules).uint64.gt = 0,
+        (google.api.field_behavior) = REQUIRED
+    ];
+    float amount = 2 [
+        (validate.rules).float.gt = 0,
+        (google.api.field_behavior) = REQUIRED
+    ];
+}
+message UpBalanceResponse {
+}
+
+message CreateLotRequest {
+    uint64 seller_id = 1 [
+        (validate.rules).uint64.gt = 0,
+        (google.api.field_behavior) = REQUIRED
+    ];
+    string title = 2 [
+        (validate.rules).string = {
+            min_len: 4,
+            max_len: 32
+        },
+        (google.api.field_behavior) = REQUIRED
+    ];
+    string description = 3;
+    float start_price = 4 [
+        (validate.rules).float.gt = 0,
+        (google.api.field_behavior) = REQUIRED
+    ];
+}
+message FetchLotRequest {
+    uint64 lot_id = 1;
+}
+
+message FetchLotResponse {
+    Lot data = 1;
+}
+
+message ListLotsRequest {
+}
+
+message ListLotsResponse {
+    repeated Lot lots = 1;
+}
+
+message CreateLotResponse {
+    Lot data = 1;
+}
+
+message CreateBidRequest {
+    uint64 user_id = 1;
+    uint64 auction_id = 2;
+    float amount = 3;
+}
+message CreateBidResponse {
+}
+
+message CloseAuctionRequest {
+    uint64 auction_id = 1;
+}
+
+message CloseAuctionResponse {
+    uint64 winner_id = 1;
+    float winning_bid = 2;
+}
+
+message ProcessTransactionsRequest {
+    uint64 auction_id = 1;
+}
+
+message ProcessTransactionsResponse {
+}

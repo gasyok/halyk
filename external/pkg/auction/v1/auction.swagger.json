@@ -1,0 +1,462 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Auction",
+    "description": "Auction a.k.a. marketplace where everyone can place Lots to bid",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Auction"
+    }
+  ],
+  "host": "localhost:7000",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auction/close": {
+      "patch": {
+        "summary": "Closes auction from biding",
+        "operationId": "Auction_CloseAuction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CloseAuctionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CloseAuctionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auction"
+        ],
+        "security": [
+          {
+            "api-token": []
+          }
+        ]
+      }
+    },
+    "/auction/transactions": {
+      "patch": {
+        "summary": "Triggers the proccess of transactions",
+        "operationId": "Auction_ProcessTransactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ProcessTransactionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProcessTransactionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auction"
+        ],
+        "security": [
+          {
+            "api-token": []
+          }
+        ]
+      }
+    },
+    "/bids": {
+      "post": {
+        "summary": "Creates a bid",
+        "operationId": "Auction_CreateBid",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateBidResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateBidRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auction"
+        ],
+        "security": [
+          {
+            "api-token": []
+          }
+        ]
+      }
+    },
+    "/lots": {
+      "get": {
+        "operationId": "Auction_ListLots",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListLotsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Auction"
+        ]
+      },
+      "post": {
+        "summary": "Creates a lot",
+        "operationId": "Auction_CreateLot",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateLotResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateLotRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auction"
+        ],
+        "security": [
+          {
+            "api-token": []
+          }
+        ]
+      }
+    },
+    "/lots/{lotId}": {
+      "get": {
+        "operationId": "Auction_FetchLot",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/FetchLotResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "lotId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Auction"
+        ]
+      }
+    },
+    "/upbalance": {
+      "post": {
+        "summary": "Upgrade user's balance",
+        "description": "Accepts user's id and amount which will be added to the balance",
+        "operationId": "Auction_UpBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpBalanceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auction"
+        ],
+        "security": [
+          {
+            "api-token": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "CloseAuctionRequest": {
+      "type": "object",
+      "properties": {
+        "auctionId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "CloseAuctionResponse": {
+      "type": "object",
+      "properties": {
+        "winnerId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "winningBid": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "CreateBidRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "auctionId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "amount": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "CreateBidResponse": {
+      "type": "object"
+    },
+    "CreateLotRequest": {
+      "type": "object",
+      "properties": {
+        "sellerId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "startPrice": {
+          "type": "number",
+          "format": "float"
+        }
+      },
+      "required": [
+        "sellerId",
+        "title",
+        "startPrice"
+      ]
+    },
+    "CreateLotResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/Lot"
+        }
+      }
+    },
+    "FetchLotResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/Lot"
+        }
+      }
+    },
+    "ListLotsResponse": {
+      "type": "object",
+      "properties": {
+        "lots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Lot"
+          }
+        }
+      }
+    },
+    "Lot": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "sellerId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "startPrice": {
+          "type": "number",
+          "format": "float"
+        },
+        "auctionId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "ProcessTransactionsRequest": {
+      "type": "object",
+      "properties": {
+        "auctionId": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "ProcessTransactionsResponse": {
+      "type": "object"
+    },
+    "UpBalanceRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "amount": {
+          "type": "number",
+          "format": "float"
+        }
+      },
+      "required": [
+        "userId",
+        "amount"
+      ]
+    },
+    "UpBalanceResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api-token": {
+      "type": "apiKey",
+      "description": "Authorization token",
+      "name": "x-api-token",
+      "in": "header"
+    }
+  }
+}

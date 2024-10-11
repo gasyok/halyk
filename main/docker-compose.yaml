@@ -1,0 +1,10 @@
+services:
+  mainapi:
+    build:
+      context: .
+    container_name: main_api
+    # Дубликация портов из .env
+    ports:
+      - "8088:8445"
+    env_file:
+      - .env
