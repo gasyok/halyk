@@ -13,10 +13,6 @@ import (
 	"github.com/halyk/main/internal/domain"
 )
 
-type InspectCartRequest struct {
-	UserID uint64 `json:"-"`
-}
-
 type DivideLotRequest struct {
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
